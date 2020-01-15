@@ -1,12 +1,14 @@
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 class ProbabilityModel:
 
     # Returns a single sample (independent of values returned on previous calls).
     # The returned value is an element of the model's sample space.
     def sample(self):
         pass
-
+    def times(self, n):
+        return np.array([self.sample() for _ in range(n)])
 
 # The sample space of this probability model is the set of real numbers, and
 # the probability measure is defined by the density function 
@@ -56,10 +58,16 @@ class Categorical(ProbabilityModel):
     # probability model object with distribution parameterized by the atomic probabilities vector
     # ap (numpy.array of size k).
     def __init__(self, ap):
-        pass
+        self.ap = ap
 
     def sample(self):
-        pass
+        x = np.random.uniform(0, 1)
+        thresh = self.ap[0]
+        i = 0
+        while x > thresh:
+            i += 1
+            thresh += self.ap[i]
+        return self.ap[i]
 
 
 # The sample space of this probability model is the union of the sample spaces of 
@@ -72,7 +80,30 @@ class MixtureModel(ProbabilityModel):
     # atomic probabilities vector ap (numpy.array of size k) and by the tuple of 
     # probability models pm
     def __init__(self, ap, pm):
-        pass
+        self.ap = ap
+        self.pm = pm
 
     def sample(self):
-        pass
+        x = np.random.uniform(0, 1)
+        thresh = self.ap[0]
+        i = 0
+        while x > thresh:
+            i += 1
+            thresh += self.ap[i]
+        model = MultiVariateNormal(self.pm[0][i], self.pm[1][i])
+        return model.sample()
+
+
+def plot_1():
+    ap = [0.1, 0.1, 0.3, 0.3, 0.2]
+    categorical_model = Categorical(ap)
+    categorical_samples = categorical_model.times(1000)
+    categories, counts = np.unique(categorical_samples, return_counts=True)
+    plt.bar([str(i) for i in categories], counts)
+    plt.title('Categorical distribution histogram')
+    plt.xlabel('Category')
+    plt.ylabel('Count')
+    plt.show()
+
+plot_1()
+
