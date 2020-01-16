@@ -7,7 +7,7 @@ class ProbabilityModel:
     # The returned value is an element of the model's sample space.
     def sample(self):
         pass
-    def times(self, n):
+    def set_times(self, n):
         return np.array([self.sample() for _ in range(n)])
 
 # The sample space of this probability model is the set of real numbers, and
@@ -97,13 +97,26 @@ class MixtureModel(ProbabilityModel):
 def plot_1():
     ap = [0.1, 0.1, 0.3, 0.3, 0.2]
     categorical_model = Categorical(ap)
-    categorical_samples = categorical_model.times(1000)
+    categorical_samples = categorical_model.set_times(1000)
     categories, counts = np.unique(categorical_samples, return_counts=True)
     plt.bar([str(i) for i in categories], counts)
     plt.title('Categorical distribution histogram')
     plt.xlabel('Category')
     plt.ylabel('Count')
+    plt.savefig('Categorical_distribution.png')
     plt.show()
 
-plot_1()
+def plot_2():
+    mu = 1
+    sigma = 1
+    univariate = UnivariateNormal(mu, sigma)
+    univariate_samples = univariate.set_times(1000)
+    plt.hist(univariate_samples)
+    plt.title('Univariate Normal Distribution')
+    plt.xlabel('Value')
+    plt.ylabel('Count')
+    plt.savefig('Univariate_distribution.png')
+    plt.show()
+# plot_1()
+plot_2()
 
