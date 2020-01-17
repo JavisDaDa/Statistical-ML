@@ -118,5 +118,16 @@ def plot_2():
     plt.savefig('Univariate_distribution.png')
     plt.show()
 # plot_1()
-plot_2()
+# plot_2()
+
+def plot_3():
+    Mu = np.array([1, 1])
+    Sigma = np.array([[1, 0.5], [0.5, 1]])
+    multi_normal_model = MultiVariateNormal(Mu, Sigma)
+    multi_normal_samples = multi_normal_model.set_times(1000)
+    x = multi_normal_samples[:, 0]
+    y = multi_normal_samples[:, 1]
+    plt.scatter(x, y)
+
+
 
