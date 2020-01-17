@@ -1,18 +1,22 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-class ProbabilityModel:
 
+
+class ProbabilityModel:
     # Returns a single sample (independent of values returned on previous calls).
     # The returned value is an element of the model's sample space.
     def sample(self):
         pass
+
     def set_times(self, n):
         return np.array([self.sample() for _ in range(n)])
 
 # The sample space of this probability model is the set of real numbers, and
 # the probability measure is defined by the density function 
 # p(x) = 1/(sigma * (2*pi)^(1/2)) * exp(-(x-mu)^2/2*sigma^2)
+
+
 class UnivariateNormal(ProbabilityModel):
     
     # Initializes a univariate normal probability model object
@@ -32,6 +36,8 @@ class UnivariateNormal(ProbabilityModel):
 # column vectors (modeled as numpy.array of size D x 1), and the probability 
 # measure is defined by the density function 
 # p(x) = 1/(det(Sigma)^(1/2) * (2*pi)^(D/2)) * exp( -(1/2) * (x-mu)^T * Sigma^-1 * (x-mu) )
+
+
 class MultiVariateNormal(ProbabilityModel):
     
     # Initializes a multivariate normal probability model object 
@@ -52,6 +58,8 @@ class MultiVariateNormal(ProbabilityModel):
 # The sample space of this probability model is the finite discrete set {0..k-1}, and 
 # the probability measure is defined by the atomic probabilities 
 # P(i) = ap[i]
+
+
 class Categorical(ProbabilityModel):
     
     # Initializes a categorical (a.k.a. multinom, multinoulli, finite discrete) 
@@ -74,6 +82,8 @@ class Categorical(ProbabilityModel):
 # the underlying probability models, and the probability measure is defined by 
 # the atomic probability vector and the densities of the supplied probability models
 # p(x) = sum ad[i] p_i(x)
+
+
 class MixtureModel(ProbabilityModel):
     
     # Initializes a mixture-model object parameterized by the
@@ -81,7 +91,8 @@ class MixtureModel(ProbabilityModel):
     # probability models pm
     def __init__(self, ap, pm):
         self.ap = ap
-        self.pm = pm
+        self.Mu = pm[0]
+        self.Sigma = pm[1]
 
     def sample(self):
         x = np.random.uniform(0, 1)
@@ -90,7 +101,7 @@ class MixtureModel(ProbabilityModel):
         while x > thresh:
             i += 1
             thresh += self.ap[i]
-        model = MultiVariateNormal(self.pm[0][i], self.pm[1][i])
+        model = MultiVariateNormal(self.Mu[i], self.Sigma[i])
         return model.sample()
 
 
@@ -106,6 +117,7 @@ def plot_1():
     plt.savefig('Categorical_distribution.png')
     plt.show()
 
+
 def plot_2():
     mu = 1
     sigma = 1
@@ -117,6 +129,8 @@ def plot_2():
     plt.ylabel('Count')
     plt.savefig('Univariate_distribution.png')
     plt.show()
+
+
 # plot_1()
 # plot_2()
 
@@ -128,6 +142,34 @@ def plot_3():
     x = multi_normal_samples[:, 0]
     y = multi_normal_samples[:, 1]
     plt.scatter(x, y)
+    plt.title('2-D Gaussian')
+    plt.xlabel('X Value')
+    plt.ylabel('Y Value')
+    plt.savefig('GaussianScatterPlot.png')
+    plt.show()
 
+def plot_4():
+    ap = np.array([0.25, 0.25, 0.25, 0.25])
+    Mu = np.array([1, 1, 1, -1, -1, 1, -1, -1]).reshape(4, 2)
+    Sigma = [np.identity(2) for _ in range(4)]
+    mix_model = MixtureModel(ap, [Mu, Sigma])
+    mix_samples = mix_model.set_times(5000)
+    x = mix_samples[:, 0]
+    y = mix_samples[:, 1]
+    plt.title('Mixture of Four Gaussians in 2 dimensions')
+    plt.xlabel('X Value')
+    plt.ylabel('Y Value')
+    plt.savefig('MixtureGaussians.png')
+    plt.scatter(x, y)
+    plt.show()
+    size = 5000
+    count = 0
+    for _ in range(size):
+        x, y = mix_model.sample()
+        if (x - 0.1) ** 2 + (y - 0.2) ** 2 <= 1:
+            count += 1
+    return print(float(count / size))
+# plot_3()
+plot_4()
 
 
