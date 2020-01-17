@@ -9,8 +9,9 @@
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{bm}
 \setcounter{section}{-1}
-\geometry{left=2.0cm,right=2.0cm}
+\geometry{left=2.0cm,right=2.0cm,top=2.0cm,bottom=2.0cm}
 
 \begin{document}
 \maketitle
@@ -20,32 +21,148 @@
 	\item Plot the categorical distribution.\\
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale = 0.8]{Categorical_distribution.png}
+	\includegraphics[scale = 0.5]{Categorical_distribution.png}
 	\caption{Categorical distribution}
 \end{figure}
 
 \item Plot the Univariate normal distribution with mean of and standard deviation of 1.\\
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale = 0.8]{Univariate_distribution.png}
+	\includegraphics[scale = 0.5]{Univariate_distribution.png}
 	\caption{Univariate Normal Distribution}
 \end{figure}\\
-
+\pagebreak
 \item Produce a scatter plot of the samples for a 2-D Gaussian.\\
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale = 0.6]{GaussianScatterPlot.png}
+	\includegraphics[scale = 0.7]{GaussianScatterPlot.png}
 	\caption{Univariate Normal Distribution}
 \end{figure}\\
 
+\item Test mixture sampling code
+Code can be seen in sampler.py. Mixture Gaussian plot is shown below\\
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale = 0.7]{MixtureGaussians.png}
+	\caption{Univariate Normal Distribution}
+\end{figure}\\
+\pagebreak
+\item Prove that the sum of two independent Poisson random variables is also a Poisson random variable.\\
+Suppose $X \sim \mathcal{P}(\lambda)$ and $Y \sim \mathcal {P}(\mu)$. Now Prove that $X + Y \sim \mathcal{P}(\lambda + \mu)$.\\
 
+\begin{align*}
+  P(X+ Y =k) &= \sum_{i = 0}^k P(X+ Y = k, X = i)\\
+    &= \sum_{i=0}^k P(Y = k-i , X =i)\\
+    &= \sum_{i=0}^k P(Y = k-i)P(X=i)\\
+    &= \sum_{i=0}^k e^{-\mu}\frac{\mu^{k-i}}{(k-i)!}e^{-\lambda}\frac{\lambda^i}{i!}\\
+   &= e^{-(\mu + \lambda)}\frac 1{k!}\sum_{i=0}^k \frac{k!}{i!(k-i)!}\mu^{k-i}\lambda^i\\
+   &= e^{-(\mu + \lambda)}\frac 1{k!}\sum_{i=0}^k \binom ki\mu^{k-i}\lambda^i\\
+   &= \frac{(\mu + \lambda)^k}{k!} \cdot e^{-(\mu + \lambda)}
+\end{align*}
+So $X + Y \sim \mathcal{P}(\lambda + \mu)$.
+\item Consider the vectors $\bm{u} = \begin{bmatrix}
+	1&2
+\end{bmatrix}^\mathrm{T}$ and $\bm{v} = \begin{bmatrix}
+	2&3
+\end{bmatrix}^\mathrm{T}$. Define the matrix $\bm{M} = \bm{u}\bm{v}^\mathrm{T}$. Compute the eigenvalues and eigenvectors of $\bm{M}$.\\
+\begin{align*}
+	\bm{M} &= \bm{u}\bm{v}^\mathrm{T}\\
+	&= \begin{bmatrix}1&2\end{bmatrix}^\mathrm{T}\cdot\begin{bmatrix}2&3\end{bmatrix}\\
+&= \begin{bmatrix}2&3\\4&6\end{bmatrix}
+\end{align*}
+\begin{align*}
+	\begin{vmatrix}\lambda \bm{I} - \bm{M}
+		\end{vmatrix}
+	&= 
+	\begin{vmatrix}
+		\lambda - 2 & -3\\
+		-4 & \lambda - 6
+	\end{vmatrix} = 0
+\end{align*}\\
+Then we can solve it as\\
+\begin{align*}
+	(\lambda - 2)(\lambda - 6) - 12 &= 0\\
+	\lambda ^2 - 8 \lambda &= 0\\
+	\lambda(\lambda - 8) &= 0\\
+	\lambda_{1} = 0, \lambda_{2} &= 8\\
+\end{align*}\\
+Let $\lambda = 0$:\\
 
-\end{itemize}
-\section{Keys, Relational Calculus and Relational Algebra}
-\subsection{Keys}
-\begin{enumerate}
-	\item 
-\end{enumerate}
-\noindent\rule[0.25\baselineskip]{\textwidth}{1pt}
+\begin{align*}
+(\lambda \bm{I} - \bm{M}) \cdot \begin{bmatrix}
+			x_{1} & x_{2}
+		\end{bmatrix}^\mathrm{T} &= 0\\
+		\begin{bmatrix}
+			-2 & -3 \\
+			-4 & -6
+		\end{bmatrix} \cdot 
+		\begin{bmatrix}
+			x_{1} \\
+			x_{2}
+		\end{bmatrix}&= 
+			\begin{bmatrix}
+				0 \\ 0
+			\end{bmatrix}\\
+			-2x_{1} - 3x_{2} &= 0\\
+\end{align*}
+Let $x_{1} = 3$, Then $x_{2} = 2$. So eigenvector is $\begin{bmatrix}
+	3 & 2
+\end{bmatrix}^{\mathrm{T}}.$\\
+Let $\lambda = 8$:\\
+
+\begin{align*}
+(\lambda \bm{I} - \bm{M}) \cdot \begin{bmatrix}
+			x_{1} & x_{2}
+		\end{bmatrix}^\mathrm{T} &= 0\\
+		\begin{bmatrix}
+			6 & -3 \\
+			-4 & 2
+		\end{bmatrix} \cdot 
+		\begin{bmatrix}
+			x_{1} \\
+			x_{2}
+		\end{bmatrix}&= 
+			\begin{bmatrix}
+				0 \\ 0
+			\end{bmatrix}\\
+			-6x_{1} - 3x_{2} &= 0\\
+			-4x_{1} + 2x_{2} &= 0
+\end{align*}
+Let $x_{1} = 1$, Then $x_{2} = 2$. So eigenvector is $\begin{bmatrix}
+	1 & 2
+\end{bmatrix}^{\mathrm{T}}.$\\
+Thus, when eigenvalue $\lambda = 0$, eigenvector is $\begin{bmatrix}
+	3 & 2
+\end{bmatrix}^{\mathrm{T}}$, when eigenvalue $\lambda = 8$, eigenvector is $\begin{bmatrix}
+	1 & 2
+\end{bmatrix}^{\mathrm{T}}$.\\
+\item Provide one example for each of the following cases.\\
+As for $(A + B)^2 \not= A^2 + 2AB + B^2$. Suppose $A=\begin{bmatrix}
+	0 & 1\\0&0
+\end{bmatrix}$ and $B=\begin{bmatrix}
+	1 & 0\\0&0
+\end{bmatrix}$. Since $A\cdot B = \begin{bmatrix}
+	0 & 0\\0&0
+\end{bmatrix}$ and $B\cdot A = \begin{bmatrix}
+	0 & 1\\0&0
+\end{bmatrix}$.\\
+So $(A + B)^2 = A ^ 2 + AB + BA + B^2 \not= A^2 + 2AB + B^2.$\\
+As for $AB = 0, A \not= 0, B\not=0$, Suppose $A=\begin{bmatrix}
+	0 & 1\\0&0
+\end{bmatrix}$ and $B=\begin{bmatrix}
+	1 & 0\\0&0
+\end{bmatrix}$.\\
+\item Show that $\bm{A}$ is orthogonal.\\
+Given $\bm{u}^{\mathrm{T}}\bm{u} = 1$ and $\bm{A} = \bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}}$.\\
+\begin{align*}
+	\bm{A}^{\mathrm{T}}\bm{A} &= (\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}})^{\mathrm{T}}(\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}})\\
+	&=(\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}})(\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}})\\
+	&=\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}} - 2\bm{u}\bm{u}^{\mathrm{T}} + 4\bm{u}\bm{u}^{\mathrm{T}}\bm{u}\bm{u}^{\mathrm{T}}\\
+	&=\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}} - 2\bm{u}\bm{u}^{\mathrm{T}} + 4\bm{u}\bm{u}^{\mathrm{T}}\\
+	&=\bm{I}
+\end{align*}
+So $\bm{A}$ is orthogonal.
+\end{itemize} 
+\section{Locally weighted linear regression(20 points)}
 
 \end{document}

@@ -159,8 +159,8 @@ def plot_4():
     plt.title('Mixture of Four Gaussians in 2 dimensions')
     plt.xlabel('X Value')
     plt.ylabel('Y Value')
-    plt.savefig('MixtureGaussians.png')
     plt.scatter(x, y)
+    plt.savefig('MixtureGaussians.png')
     plt.show()
     size = 5000
     count = 0
