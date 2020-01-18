@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 
 \title{COMP 540 Assignment \#1}
-\author{Yunda Jia yj32}
+\author{Yunda Jia\\Yu Wu}
 \date{\today}
 \usepackage{natbib}
 \usepackage{graphicx}
@@ -59,7 +59,32 @@ Suppose $X \sim \mathcal{P}(\lambda)$ and $Y \sim \mathcal {P}(\mu)$. Now Prove 
    &= e^{-(\mu + \lambda)}\frac 1{k!}\sum_{i=0}^k \binom ki\mu^{k-i}\lambda^i\\
    &= \frac{(\mu + \lambda)^k}{k!} \cdot e^{-(\mu + \lambda)}
 \end{align*}
-So $X + Y \sim \mathcal{P}(\lambda + \mu)$.
+So $X + Y \sim \mathcal{P}(\lambda + \mu)$.\\
+\item Find $\alpha, \mu_{1}$ and $\sigma_{1}$.\\
+We have $X_{0}$ and $X_{1}$ be continuous random variables. If\\
+\begin{align*}
+    p(X_{0} = x_{0}) &= \alpha_{0}e^{-\frac{(x_{0} - \mu_{0})^2}{2\sigma_{0}^2}}\\
+    P(X_{1} = x_{1}|X_{0} = x_{0}) &= \alpha_{1}e^{-\frac{(x_{1} - x_{0})^2}{2\sigma^2}}
+\end{align*}\\
+\begin{align*}
+    p(X_{1} = x_{1}) &= \int P(X_{1} = x_{1}|X_{0} = x_{0}) \cdot p(X_{0} = x_{0}) d x_{0}\\
+    &= \alpha_{0}\alpha_{1}\int e ^{-\frac{\sigma^2(x_{0} - \mu_{0})^2 + \sigma_{0}^2(x_{1} - x_{0})^2}{2\sigma_{0}^2\sigma^2}}d x_{0}\\
+    &= \alpha_{0}\alpha_{1}\int e ^{-\frac{(\sigma^2 + \sigma_{0}^2)x_{0}^2 - 2(\sigma^2\mu_{0} + \sigma_{0}^2x_{1})x_{0} + \sigma^2\mu_{0}^2 + \sigma_{0}^2x_{1}^2}{2\sigma_{0}^2\sigma^2}}d x_{0}\\
+    &= \alpha_{0}\alpha_{1}\int e^{-\frac{1}{2\sigma_{0}^2\sigma^2}[(\sqrt{\sigma^2 + \sigma_{0}^2}x_{0} - \frac{-\sigma^2\mu_{0} + \sigma_{0}^2x_{1}}{\sqrt{\sigma^2 + \sigma_{0}^2}})^2 + \sigma^2\mu_{0}^2 + \sigma_{0}^2x_{1}^2 - \frac{\sigma^2\mu_{0}^2 + \sigma_{0}^2x_{1}^2}{\sigma^2 + \sigma_{0}^2}]} d x_{0}\\
+\end{align*}
+Since \begin{align*}
+    \int \frac{1}{\sqrt{2\pi \sigma}}e^{-\frac{(x - \mu) ^ 2}{2\sigma^2}}d x = 1
+\end{align*}\\
+\begin{align*}
+    p(X_{1} = x_{1}) &= \frac{\alpha\alpha_{0}\sqrt{2\pi}\sigma\sigma_{0}}{\sqrt{\sigma^2 + \sigma_{0}^2}} e ^ {-\frac{1}{2\sigma_{0}^2\sigma^2}(\sigma^2\mu_{0}^2 + \sigma_{0}^2x_{1}^2 - \frac{\sigma^2\mu_{0}^2 + \sigma_{0}^2x_{1}^2}{\sigma^2 + \sigma_{0}^2})}\\
+    &= \alpha e^{-\frac{(x_{1} - \mu_{0})^2}{2(\sigma^2 + \sigma_{0}^2)}}
+\end{align*}
+Thus we can solve that:\\
+\begin{align*}
+    \alpha &= \frac{\alpha\alpha_{0}\sqrt{2\pi}\sigma\sigma_{0}}{\sqrt{\sigma^2 + \sigma_{0}^2}}\\
+    \mu_{1} &= \mu_{0}\\
+    \sigma_{1} &= \sqrt{\sigma^2 + \sigma_{0}^2}
+\end{align*}
 \item Consider the vectors $\bm{u} = \begin{bmatrix}
 	1&2
 \end{bmatrix}^\mathrm{T}$ and $\bm{v} = \begin{bmatrix}
@@ -105,8 +130,8 @@ Let $\lambda = 0$:\\
 			\end{bmatrix}\\
 			-2x_{1} - 3x_{2} &= 0\\
 \end{align*}
-Let $x_{1} = 3$, Then $x_{2} = 2$. So eigenvector is $\begin{bmatrix}
-	3 & 2
+Let $x_{1} = 3$, Then $x_{2} = -2$. So eigenvector is $\begin{bmatrix}
+	3 & -2
 \end{bmatrix}^{\mathrm{T}}.$\\
 Let $\lambda = 8$:\\
 
@@ -125,14 +150,14 @@ Let $\lambda = 8$:\\
 			\begin{bmatrix}
 				0 \\ 0
 			\end{bmatrix}\\
-			-6x_{1} - 3x_{2} &= 0\\
+			6x_{1} - 3x_{2} &= 0\\
 			-4x_{1} + 2x_{2} &= 0
 \end{align*}
 Let $x_{1} = 1$, Then $x_{2} = 2$. So eigenvector is $\begin{bmatrix}
 	1 & 2
 \end{bmatrix}^{\mathrm{T}}.$\\
 Thus, when eigenvalue $\lambda = 0$, eigenvector is $\begin{bmatrix}
-	3 & 2
+	3 & -2
 \end{bmatrix}^{\mathrm{T}}$, when eigenvalue $\lambda = 8$, eigenvector is $\begin{bmatrix}
 	1 & 2
 \end{bmatrix}^{\mathrm{T}}$.\\
@@ -161,7 +186,32 @@ Given $\bm{u}^{\mathrm{T}}\bm{u} = 1$ and $\bm{A} = \bm{I} - 2\bm{u}\bm{u}^{\mat
 	&=\bm{I} - 2\bm{u}\bm{u}^{\mathrm{T}} - 2\bm{u}\bm{u}^{\mathrm{T}} + 4\bm{u}\bm{u}^{\mathrm{T}}\\
 	&=\bm{I}
 \end{align*}
-So $\bm{A}$ is orthogonal.
+So $\bm{A}$ is orthogonal.\\
+\item Prove the following assertions.\\
+As for $f(x) = x ^ 3$ for $x \geq 0$.\\
+\begin{align*}
+    f(x) &= x ^ 3\\
+    f^{''}(x) &= 6x\\
+\end{align*}
+Since $x \geq 0$, $ f^{''}(x) &= 6x \geq 0$. Thus $f(x) = x ^ 3$ is convex for $x \geq 0$.\\
+As for $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$. Let $\bm{x} = (x_{1}, x_{2})$ and $\bm{y} = (y_{1}, y_{2})$ and $\lambda \in [0, 1]$.\\
+\begin{align*}
+    f(\lambda\bm{x} + (1 - \lambda)\bm{y}) &= f(\lambda x_{1} + (1 - \lambda)y_{1}, \lambda x_{2} +(1 - \lambda)y_{2})\\
+    &= max(\lambda x_{1} + (1 - \lambda)y_{1}, \lambda x_{2} +(1 - \lambda)y_{2})\\
+    &\leq max(\lambda x_{1}, \lambda x_{2}) + max((1 - \lambda)y_{1}, (1 - \lambda)y_{2})\\
+    &= \lambda max(x_{1}, x_{2}) + (1 - \lambda) max(y_{1}, y_{2})\\
+    &= \lambda f(\bm{x}) + (1 - \lambda)f(\bm{y})
+\end{align*}
+So $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$ is convex on $\mathbb{R}^2$.\\
+As for function $f + g$. If univariate functions $f$ and $g$ are convex on S, then $ f^{''}(x) \geq 0$ and $ g^{''}(x)\geq 0$.\\
+So $(f + g)^{''}(x) = f^{''}(x) + g^{''}(x) \geq 0$. Thus if univariate functions $f$ and $g$ are convex on $S$, then $f + g$ is convex on $S$.\\
+As for $fg$. If univariate functions $f$ and $g$ are convex and non-negegative on $S$.
+\begin{align*}
+    (fg)^{''}(x) &= (f^{'}g + fg^{'})^{'}(x)\\
+    &= (f^{''}g + f^{'}g^{'} + f^{'}g^{'} + fg^{''})(x)\\
+    &= (f^{''}g + 2f^{'}g^{'} + f g^{''})(x)
+\end{align*}
+Since $f$ and $g$ have their minimum within $S$ at the same point. Before the minimum point, both $f$ and $g$ are decreasing. After the minimum point, both $f$ and $g$ are increasing. So $f^{'}g^{'} \geq 0$, $f^{''} \geq 0$, $g^{''} \geq 0$, $f\geq0$ and $g \geq 0$. Thus $(fg)^{''}(x) = (f^{''}g + 2f^{'}g^{'} + f g^{''})(x)\geq 0$. Then $fg$ is convex on $S$.
 \end{itemize} 
 \section{Locally weighted linear regression(20 points)}
 
