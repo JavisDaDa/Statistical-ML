@@ -17,7 +17,9 @@ def feature_normalize(X):
     ########################################################################
     # TODO: modify the three lines below to return the correct values
     ########################################################################
-    
+    mu = np.mean(X, axis=0).T
+    sigma = np.std(X, axis=0).T
+    X_norm = (X - mu) / sigma
     
   
     ########################################################################
