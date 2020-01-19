@@ -42,9 +42,7 @@ class LinearRegressor:
             # Update the parameters using the gradient and the learning rate.       #
             #    One line of code expected                                          #
             #########################################################################
-
-
-
+            self.theta -= learning_rate * grad
             #########################################################################
             #                       END OF YOUR CODE                                #
             #########################################################################
@@ -82,13 +80,12 @@ class LinearRegressor:
         - y_pred: Predicted output for the data in X. y_pred is a 1-dimensional
         array of length N, and each element is a real number.
         """
-        y_pred = np.zeros(X.shape[0])
         ###########################################################################
         # TODO:                                                                   #
         # Implement this method. Store the predicted outputs in y_pred.           #
         #    One line of code expected                                            #
         ###########################################################################
-
+        y_pred = np.dot(X, np.array(self.theta).T)
 
 
         ###########################################################################
@@ -116,9 +113,9 @@ class LinearReg_SquaredLoss(LinearRegressor):
         # Calculate J (loss) and grad (gradient) wrt to X,y, and self.theta.      #
         #   2-4 lines of code expected                                            #
         ###########################################################################
-
-
-
+        m = np.shape(X)[0]
+        J = 1.0 / (2.0 * m) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
+        grad = 1.0 / m * np.dot((np.dot(X, np.array(self.theta).T) - y).T, X)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################

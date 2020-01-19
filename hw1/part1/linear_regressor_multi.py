@@ -41,7 +41,7 @@ class LinearRegressor_Multi:
             # Update the parameters using the gradient and the learning rate.       #
             #   One line of code expected
             #########################################################################
-
+            self.theta -= learning_rate * grad
 
 
             #########################################################################
@@ -80,14 +80,14 @@ class LinearRegressor_Multi:
         - y_pred: Predicted output for the data in X. y_pred is a 1-dimensional
         array of length N, and each element is a real number.
         """
-        y_pred = np.zeros(X.shape[0])
+
 
         ###########################################################################
         # TODO:                                                                   #
         # Implement this method. Store the predicted outputs in y_pred.           #
         #  One line of code expected                                              #
         ###########################################################################
-
+        y_pred = np.dot(X, np.array(self.theta).T)
 
 
         ###########################################################################
@@ -105,7 +105,7 @@ class LinearRegressor_Multi:
         # Solve for theta_n using the normal equation.                            #
         #  One line of code expected                                              #
         ###########################################################################
-
+        theta_n = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
 
 
         ###########################################################################
@@ -125,16 +125,13 @@ class LinearReg_SquaredLoss(LinearRegressor_Multi):
 
     def loss (self,X,y):
         num_examples,dim = X.shape
-        J = 0
-        grad = np.zeros((dim,))
         ###########################################################################
         # TODO:                                                                   #
         # Calculate J (loss) and grad (gradient) wrt to X,y, and self.theta.      #
         #  2-3 lines of code expected                                             #
         ###########################################################################
-
-
-
+        J = 1.0 / (2.0 * num_examples) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
+        grad = 1.0 / num_examples * np.dot((np.dot(X, np.array(self.theta).T) - y).T, X)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
