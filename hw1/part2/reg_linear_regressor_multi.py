@@ -132,7 +132,8 @@ class RegularizedLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate J (loss) wrt to X,y, and theta.                               #
         #  2 lines of code expected                                               #
         ###########################################################################
-
+        J = 1.0 / (2.0 * num_examples) * sum(np.square((np.dot(X, np.array(theta).T)) - y))
+        J += float(reg) / (2.0 * num_examples) * (sum(np.square(theta)))
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -149,7 +150,8 @@ class RegularizedLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate gradient of loss function wrt to X,y, and theta.              #
         #  3 lines of code expected                                               #
         ###########################################################################
-
+        grad[0] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[0]
+        grad[1:] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[1:] + reg / num_examples * theta[1:]
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -179,8 +181,8 @@ class LassoLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate J (loss) wrt to X,y, and theta.                               #
         #  2 lines of code expected                                               #
         ###########################################################################
-        
-
+        J = 1.0 / (2.0 * num_examples) * sum(np.square((np.dot(X, np.array(theta).T)) - y))
+        J += reg / num_examples * sum(np.abs(theta))
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -197,9 +199,8 @@ class LassoLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate gradient of loss function wrt to X,y, and theta.              #
         #  3 lines of code expected                                               #
         ###########################################################################
-
-
-
+        grad[0] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[0]
+        grad[1:] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[1:] + reg / num_examples * np.sign(theta[1:])
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
