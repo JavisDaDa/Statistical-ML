@@ -114,7 +114,10 @@ class LinearReg_SquaredLoss(LinearRegressor):
         #   2-4 lines of code expected                                            #
         ###########################################################################
         m = np.shape(X)[0]
-        J = 1.0 / (2.0 * m) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
+        #J = 1.0 / (2.0 * m) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
+
+        J = 1 / (2*m) * np.square(self.theta.T@X - y).sum()
+
         grad = 1.0 / m * np.dot((np.dot(X, np.array(self.theta).T) - y).T, X)
         ###########################################################################
         #                           END OF YOUR CODE                              #
