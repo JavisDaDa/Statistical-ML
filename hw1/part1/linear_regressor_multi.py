@@ -105,8 +105,7 @@ class LinearRegressor_Multi:
         # Solve for theta_n using the normal equation.                            #
         #  One line of code expected                                              #
         ###########################################################################
-        theta_n = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
-
+        theta_n = np.linalg.inv(X.T@X)@X.T@y
 
         ###########################################################################
 
@@ -130,8 +129,8 @@ class LinearReg_SquaredLoss(LinearRegressor_Multi):
         # Calculate J (loss) and grad (gradient) wrt to X,y, and self.theta.      #
         #  2-3 lines of code expected                                             #
         ###########################################################################
-        J = 1.0 / (2.0 * num_examples) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
-        grad = 1.0 / num_examples * np.dot((np.dot(X, np.array(self.theta).T) - y).T, X)
+        J = 1.0 / (2.0 * num_examples) * np.square(np.array(self.theta) @ X.T - y).sum()
+        grad = 1.0 / num_examples * X.T @ (np.array(self.theta) @ X.T - y)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################

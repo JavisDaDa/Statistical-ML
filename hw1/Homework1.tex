@@ -14,43 +14,45 @@
 \usepackage{mathdots}
 \usepackage{subfigure}
 \usepackage{subfig}
+\usepackage{algorithmic}
+\usepackage[ruled,vlined]{algorithm2e}
 \setcounter{section}{-1}
 \geometry{left=2.0cm,right=2.0cm,top=2.0cm,bottom=2.0cm}
-
+\SetKwInput{KwInput}{Input}                % Set the Input
+\SetKwInput{KwOutput}{Output}              % set the Output
 \begin{document}
 \maketitle
 
 \section{Background refresher(30 points)}
 \begin{itemize}
 	\item Plot the categorical distribution.\\
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.5]{Categorical_distribution.png}
 	\caption{Categorical distribution}
 \end{figure}
 
 \item Plot the Univariate normal distribution with mean of and standard deviation of 1.\\
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.5]{Univariate_distribution.png}
 	\caption{Univariate Normal Distribution}
 \end{figure}\\
 \pagebreak
 \item Produce a scatter plot of the samples for a 2-D Gaussian.\\
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.7]{GaussianScatterPlot.png}
+	\includegraphics[scale = 0.5]{GaussianScatterPlot.png}
 	\caption{Univariate Normal Distribution}
 \end{figure}\\
 
 \item Test mixture sampling code
 Code can be seen in sampler.py. Mixture Gaussian plot is shown below\\
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.7]{MixtureGaussians.png}
+	\includegraphics[scale = 0.5]{MixtureGaussians.png}
 	\caption{Univariate Normal Distribution}
 \end{figure}\\
-\pagebreak
 \item Prove that the sum of two independent Poisson random variables is also a Poisson random variable.\\
 Suppose $X \sim \mathcal{P}(\lambda)$ and $Y \sim \mathcal {P}(\mu)$. Now Prove that $X + Y \sim \mathcal{P}(\lambda + \mu)$.\\
 
@@ -89,6 +91,25 @@ Thus we can solve that:\\
     \mu_{1} &= \mu_{0}\\
     \sigma_{1} &= \sqrt{\sigma^2 + \sigma_{0}^2}
 \end{align*}
+\item Show that if $P(A|B, C) > P(A|B)$ then $P(A|B, C^C) < P(A|B)$\\
+\begin{align*}
+    P(A|B, C) &= \frac{P(A\bigcap B \bigcap C)}{P(B \bigcap C)}
+\end{align*}
+\begin{align*}
+    \frac{P(A\bigcap B \bigcap C)}{P(B \bigcap C)} &> \frac{P(A \bigcap B)}{P(B)}\\
+    \frac{P(C|A\bigcap B)}{P(C|B)} &> 1\\
+    P(C|A\bigcap B) &> P(C|B)\\
+    1 - P(C|A\bigcap B) &< 1 - P(C|B)\\
+    P(C^C|A\bigcap B) &< P(C^C|B)\\
+    \frac{P(C^C|A\bigcap B)}{P(C^C|B)} &< 1
+\end{align*}
+\begin{align*}
+    P(A|B, C^C) &= \frac{P(A\bigcap B \bigcap C^C)}{P(B \bigcap C^C)}\\
+    &= \frac{P(C^C|A\bigcap B)P(A\bigcap B)}{P(C^C|B)P(B)}\\
+    &= \frac{P(C^C|A\bigcap B)}{P(C^C|B)P(B)}P(A|B)\\
+    &<P(A|B)
+\end{align*}
+Thus, if $P(A|B, C) > P(A|B)$ then $P(A|B, C^C) < P(A|B)$.
 \item Consider the vectors $\bm{u} = \begin{bmatrix}
 	1&2
 \end{bmatrix}^\mathrm{T}$ and $\bm{v} = \begin{bmatrix}
@@ -165,6 +186,16 @@ Thus, when eigenvalue $\lambda = 0$, eigenvector is $\begin{bmatrix}
 \end{bmatrix}^{\mathrm{T}}$, when eigenvalue $\lambda = 8$, eigenvector is $\begin{bmatrix}
 	1 & 2
 \end{bmatrix}^{\mathrm{T}}$.\\
+\item Show that if $A$ is positive semi-definite, then all eigenvalues of $A$ are non-negative.\\
+Definition of an eigenvalue and eigenvector is:\\
+\begin{align*}
+    A\bm{v} = \lambda \bm{v}
+\end{align*}
+If $A$ is positive semi-definite, $\bm{x}^{T}A\bm{x} \geq 0$ for all $\bm{x}$.
+\begin{align*}
+    \bm{v}^{T}A\bm{v} =  \bm{v}^{T}\bm{v}\lambda
+\end{align*}
+Since $\bm{v}^{T}\bm{v}$ is necessarily a positive number, in order for $ \bm{v}^{T}A\bm{v}$ to be greater than or equal to 0, $\lambda$ must be $\lambda \geq 0$.
 \item Provide one example for each of the following cases.\\
 As for $(A + B)^2 \not= A^2 + 2AB + B^2$. Suppose $A=\begin{bmatrix}
 	0 & 1\\0&0
@@ -192,13 +223,13 @@ Given $\bm{u}^{\mathrm{T}}\bm{u} = 1$ and $\bm{A} = \bm{I} - 2\bm{u}\bm{u}^{\mat
 \end{align*}
 So $\bm{A}$ is orthogonal.\\
 \item Prove the following assertions.\\
-As for $f(x) = x ^ 3$ for $x \geq 0$.\\
+--As for $f(x) = x ^ 3$ for $x \geq 0$.\\
 \begin{align*}
     f(x) &= x ^ 3\\
     f^{''}(x) &= 6x\\
 \end{align*}
 Since $x \geq 0$, $ f^{''}(x) &= 6x \geq 0$. Thus $f(x) = x ^ 3$ is convex for $x \geq 0$.\\
-As for $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$. Let $\bm{x} = (x_{1}, x_{2})$ and $\bm{y} = (y_{1}, y_{2})$ and $\lambda \in [0, 1]$.\\
+--As for $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$. Let $\bm{x} = (x_{1}, x_{2})$ and $\bm{y} = (y_{1}, y_{2})$ and $\lambda \in [0, 1]$.\\
 \begin{align*}
     f(\lambda\bm{x} + (1 - \lambda)\bm{y}) &= f(\lambda x_{1} + (1 - \lambda)y_{1}, \lambda x_{2} +(1 - \lambda)y_{2})\\
     &= max(\lambda x_{1} + (1 - \lambda)y_{1}, \lambda x_{2} +(1 - \lambda)y_{2})\\
@@ -207,9 +238,9 @@ As for $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$. Let $\bm{x} = (x_{1}, x_{2})$ and 
     &= \lambda f(\bm{x}) + (1 - \lambda)f(\bm{y})
 \end{align*}
 So $f(x_{1}, x_{2}) = max(x_{1}, x_{2})$ is convex on $\mathbb{R}^2$.\\
-As for function $f + g$. If univariate functions $f$ and $g$ are convex on S, then $ f^{''}(x) \geq 0$ and $ g^{''}(x)\geq 0$.\\
+--As for function $f + g$. If univariate functions $f$ and $g$ are convex on S, then $ f^{''}(x) \geq 0$ and $ g^{''}(x)\geq 0$.\\
 So $(f + g)^{''}(x) = f^{''}(x) + g^{''}(x) \geq 0$. Thus if univariate functions $f$ and $g$ are convex on $S$, then $f + g$ is convex on $S$.\\
-As for $fg$. If univariate functions $f$ and $g$ are convex and non-nigegative on $S$.
+--As for $fg$. If univariate functions $f$ and $g$ are convex and non-negegative on $S$.
 \begin{align*}
     (fg)^{''}(x) &= (f^{'}g + fg^{'})^{'}(x)\\
     &= (f^{''}g + f^{'}g^{'} + f^{'}g^{'} + fg^{''})(x)\\
@@ -308,9 +339,58 @@ $X$ is the $m \times d$ input matrix and y is a $m \times 1$ vector.\\
 \end{align*}
 So $J(\theta) = (X \theta - y)^{T}W(X\theta - y)$ can be written in the from $J(\theta) = (X \theta - y)^{T}W(X\theta - y)$ when choosing $W$ as above.
 
-\item 
+\item Solve for $\theta$\\
+\begin{align*}
+     J(\theta) &= (X \theta - y)^{T}W(X\theta - y)\\
+     &= ((X \theta)^{T} - y^{T})W(X\theta - y)\\
+     &= ((X \theta)^{T}W - y^{T}W)(X\theta - y)\\
+     &= \theta^{T}X^{T}WX\theta - 2\theta^{T}X^{T}Wy + y^{T}Wy
+\end{align*}
+\begin{align*}
+    \nabla_{\theta} J(\theta) &= 2X^{T}WX\theta - 2X^{T}Wy = 0\\
+    \theta &= (X^{T}WX)^{-1}X^{T}Wy\\
+    &= (X^{T}X)^{-1}X^{T}y
+\end{align*}
+Thus $\theta= (X^{T}X)^{-1}X^{T}y$.\\
+\item Write down an algorithm for calculating $\theta$ by batch gradient descent for locally weighted linear regression.\\
+We know that $\theta= (X^{T}X)^{-1}X^{T}y$.\\
+Algorithm is\\
+\begin{algorithm}[H]
+\DontPrintSemicolon
+  
+  \KwInput{\bm{x}}
+  \KwOutput{\theta}
+  \For{$i < 10000$}    
+        { 
+                \theta_{j} &\gets \theta_{j} - \alpha \sum_{i}w^{(i)}(\sum_{k}(\theta_{k}x_{x}^{(i)})- y^{(i)}), j = 0\\
+        	    \theta_{j} &\gets \theta_{j} - \alpha \sum_{i}w^{(i)}(\sum_{k}(\theta_{k}x_{x}^{(i)})- y^{(i)})x_{j}^{(i)}, j \not= 0
+        }
+\caption{Calculating $\theta$ by batch gradient descent}
+\end{algorithm}
+Locally weighted linear regression is a non-parametric method. 
 \end{itemize}
 \section{Properties of the linear regression estimator(10 points)}
+\begin{itemize}
+    \item Show that $E[\theta] = \theta^{*}$\\
+    \begin{align*}
+        \theta &= (X^{T}X)^{-1}X^{T}y\\
+        &= (X^{T}X)^{-1}X^{T}(X\theta^{*} + \epsilon)\\
+        &= (X^{T}X)^{-1}X^{T}X\theta^{*} + (X^{T}X)^{-1}X^{T}\epsilon
+    \end{align*}
+    \begin{align*}
+        E(\theta) &= E((X^{T}X)^{-1}X^{T}X\theta^{*} + (X^{T}X)^{-1}X^{T}\epsilon)\\
+        &= E((X^{T}X)^{-1}X^{T}X\theta^{*}) + E(X^{T}X)^{-1}X^{T}\epsilon)\\
+        &= \theta^{*} + (X^{T}X)^{-1}X^{T}E(\epsilon)\\
+        &= \theta^{*}
+    \end{align*}
+\item Show the variance of the least squares estimator is $Var(\theta) = (X^{T}X)^{-1}\sigma^2$. Suppose $\bm{b}$ is an estimator of $\theta$\\
+\begin{align*}
+    Var(\theta) &= E[(\bm{b} - \theta)(\bm{b} - \theta)^{T}|X]\\
+    &= E[(X^{T}X)^{-1}X^{T}\epsilon\epsilon^{T}X(X^{T}X)^{-1}|X]\\
+    &= (X^{T}X)^{-1}X^{T}E[\epsilon\epsilon^{T}|X]X(X^{T}X)^{-1}\\
+    &= (X^{T}X)^{-1}\sigma^2
+\end{align*}
+\end{itemize}
 \section{Implementing linear regression and regularized linear regression(90 points)}
 \subsection{Implementing linear regression(45 points)}
 \begin{itemize}
@@ -318,12 +398,12 @@ So $J(\theta) = (X \theta - y)^{T}W(X\theta - y)$ can be written in the from $J(
     See the implementation for the $loss$ function in the file $linear\_regressor.py$.
     \item A2: Implementing gradient descent\\
     See the implementation for the $train$ function in the file $linear\_regressor.py$.\\
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.3]{gradient_descent.png}
 	\caption{Fitting a linear model}
 \end{figure}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.3]{J_history.png}
 	\caption{Convergence of gradient descent}
@@ -332,8 +412,10 @@ So $J(\theta) = (X \theta - y)^{T}W(X\theta - y)$ can be written in the from $J(
     For lower status percentage = 5, we predict a median home value of 298034.49\\
 For lower status percentage = 50, we predict a median home value of -129482.13\\
 \item B1: Feature normalization\\
+See the implementation for the $feature_normalize$ function in the file $utils.py$.
 \item B2: Loss function and gradient descent\\
-\begin{figure}[h!]
+See the implementation for the $train$ and $loss$ function in the file $linear\_regressor\_multi.py$.
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.3]{multi_gradient_descent.png}
 	\caption{Convergence of gradient descent with multiple variables}
@@ -341,12 +423,14 @@ For lower status percentage = 50, we predict a median home value of -129482.13\\
 \item B3: Making predictions on unseen data\\
 For average home in Boston suburbs, we predict a median home value of 230467.11\\
 \item B4: Normal equations\\
+See the implementation for the $normal_eqn$ function in the file $linear\_regressor\_multi.py$.\\
 Theta computed by direct solution is: $[ 3.64594884e+01 -1.08011358e-01  4.64204584e-02  2.05586264e-02
   2.68673382e+00 -1.77666112e+01  3.80986521e+00  6.92224640e-04
  -1.47556685e+00  3.06049479e-01 -1.23345939e-02 -9.52747232e-01
   9.31168327e-03 -5.24758378e-01]$\\
 For average home in Boston suburbs, we predict a median home value of 230406.54.\\
-\pagebreak
+
+\newpage
 \item B5: Exploring convergence of gradient descent
 \begin{figure}[htbp]
     \centering
@@ -354,14 +438,14 @@ For average home in Boston suburbs, we predict a median home value of 230406.54.
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{learning_rate0.png}
+    \includegraphics[scale = 0.3]{learning_rate0.png}
     \end{minipage}
     }
     \subfloat[learning rate=0.03]
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{learning_rate2.png}
+    \includegraphics[scale = 0.3]{learning_rate2.png}
     \end{minipage}
     }
     
@@ -369,22 +453,21 @@ For average home in Boston suburbs, we predict a median home value of 230406.54.
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{learning_rate1.png}
+    \includegraphics[scale = 0.3]{learning_rate1.png}
     \end{minipage}
     }
     \subfloat[learning rate=0.3]
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{learning_rate3.png}
+    \includegraphics[scale = 0.3]{learning_rate3.png}
     \end{minipage}
     }
     \caption{Convergence of gradient descent with multiple variables according to different learning rates}
 \end{figure}
 
 According to the above figures, when learning $rate = 0.01$ is a good choice.\\
-\pagebreak
-
+\newpage
 When learning rate = 0.01, chosing different iteration times.\\
 \begin{figure}[htbp]
     \centering
@@ -392,14 +475,14 @@ When learning rate = 0.01, chosing different iteration times.\\
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{num_iters0.png}
+    \includegraphics[scale = 0.3]{num_iters0.png}
     \end{minipage}
     }
     \subfloat[iteration time = 500]
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{num_iters1.png}
+    \includegraphics[scale = 0.3]{num_iters1.png}
     \end{minipage}
     }
     
@@ -407,19 +490,147 @@ When learning rate = 0.01, chosing different iteration times.\\
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{num_iters2.png}
+    \includegraphics[scale = 0.3]{num_iters2.png}
     \end{minipage}
     }
     \subfloat[iteration time = 50000]
     {
     \begin{minipage}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{num_iters3.png}
+    \includegraphics[scale = 0.3]{num_iters3.png}
     \end{minipage}
     }
     \caption{Convergence of gradient descent with multiple variables according to different iteration times}
 \end{figure}
 
 According to the above figures, iteration time is 500 is a good choice.
+\end{itemize}
+\pagebreak
+
+\subsection{Implementing regularized linear regression(45 points)}
+\begin{itemize}
+    \item A1: Regularized linear regression cost function\\
+    See the implementation for the $loss$ function in the class $Reg\_LinearRegression\_SquaredLoss$ in the file $reg\_linear\_regressor\_multi.py$.\\
+    \item A2: Gradient of the Regularized linear regression cost function\\
+    See the implementation for the $grad_loss$ function in the class $Reg\_LinearRegression\_SquaredLoss$ in the file $reg\_linear\_regressor\_multi.py$.\\
+    \item A3: Learning curves\\
+    \item A4: Adjusting the regularization parameter\\
+    \begin{figure}[htbp]
+    \centering
+    \subfloat[Polynomial Regression fit]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Polynomial_Regression_fit_0.png}
+    \end{minipage}
+    }
+    \subfloat[Learning curve for linear regression]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Learning_curve_for_linear_regression_0.png}
+    \end{minipage}
+    }
+    \caption{$\lambda = 0.0$}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \subfloat[Polynomial Regression fit]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Polynomial_Regression_fit_1.png}
+    \end{minipage}
+    }
+    \subfloat[Learning curve for linear regression]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Learning_curve_for_linear_regression_1.png}
+    \end{minipage}
+    }
+    \caption{$\lambda = 1.0$}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \subfloat[Polynomial Regression fit]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Polynomial_Regression_fit_2.png}
+    \end{minipage}
+    }
+    \subfloat[Learning curve for linear regression]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Learning_curve_for_linear_regression_2.png}
+    \end{minipage}
+    }
+    \caption{$\lambda = 10.0$}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \subfloat[Polynomial Regression fit]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Polynomial_Regression_fit_3.png}
+    \end{minipage}
+    }
+    \subfloat[Learning curve for linear regression]
+    {
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[scale = 0.6]{Learning_curve_for_linear_regression_3.png}
+    \end{minipage}
+    }
+    \caption{$\lambda = 100.0$}
+\end{figure}
+\pagebreak
+\item A5: Selecting $\lambda$ using a validation set
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.7]{validation_error_with_lambda.png}
+	\caption{Fitting a linear model}
+\end{figure}
+According to the figure above, the best $\lambda$ is 3.\\
+\item A6: Computing test set error\\
+Test error is 8.936718220214782.\\
+\item A7: Plotting learning curves with randomly selected examples\\
+\item A8: Comparing ridge regression and lasso regression models\\
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.7]{ridge_regression.png}
+	\caption{Fitting a linear model}
+\end{figure}
+Lasso regression converges faster than Ridge regression.
+\end{itemize}
+\section{Extra Credits}
+\begin{itemize}
+    \item The lowest achievable error on the test set with $\lambda = 0$\\
+    Test error is 12.930601133114878 when $\lambda = 0$.
+    \item Select the best value for $\lambda$ and report the test set error with the best $\lambda$.\\
+    \begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{ex_select_lambda.png}
+	\caption{Fitting a linear model}
+\end{figure}
+The best $\lambda = 30.0$. Test error at $\lambda = 30.0$ is 13.34301316716897.
+\item What is the test set error with quadratic features with the best $\lambda$ chosen with the validation set?\\
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{ex_select_lambda_poly.png}
+	\caption{Fitting a linear model}
+\end{figure}
+The best $\lambda = 30.0$. Test error at $\lambda = 30.0$ is 4.742818184669156.
+\pagebreak
+\item What is the test set error with cubic features with the best $\lambda$ chosen with the validation set?\\
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{ex_select_lambda_poly2.png}
+	\caption{Fitting a linear model}
+\end{figure}
+The best $\lambda = 300.0$. Test error at $\lambda = 30.0$ is 6.558244031190886.
 \end{itemize}
 \end{document}

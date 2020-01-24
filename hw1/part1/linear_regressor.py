@@ -106,19 +106,15 @@ class LinearReg_SquaredLoss(LinearRegressor):
     """
 
     def loss (self,X,y):
-        J = 0
-        grad = np.zeros((2,))
         ###########################################################################
         # TODO:                                                                   #
         # Calculate J (loss) and grad (gradient) wrt to X,y, and self.theta.      #
         #   2-4 lines of code expected                                            #
         ###########################################################################
         m = np.shape(X)[0]
-        #J = 1.0 / (2.0 * m) * np.sum((np.dot(X, np.array(self.theta).T) - y) ** 2)
 
-        J = 1 / (2*m) * np.square(self.theta.T@X - y).sum()
-
-        grad = 1.0 / m * np.dot((np.dot(X, np.array(self.theta).T) - y).T, X)
+        J = 1.0 / (2.0 * m) * np.square(np.array(self.theta)@X.T - y).sum()
+        grad = 1.0 / m * X.T@(np.array(self.theta)@X.T - y)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
