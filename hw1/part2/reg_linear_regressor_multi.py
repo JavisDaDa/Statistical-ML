@@ -88,7 +88,7 @@ class RegularizedLinearRegressor_Multi:
         # Implement this method. Store the predicted outputs in y_pred.           #
         #  1 line of code expected                                                #
         ###########################################################################
-
+        y_pred = np.dot(X, np.array(self.theta).T)
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -105,7 +105,7 @@ class RegularizedLinearRegressor_Multi:
         #  One line of code expected                                              #
         ###########################################################################
 
-        theta_n = np.zeros((X.shape[1],))
+        theta_n = np.matmul(np.matmul(np.linalg.inv(np.matmul(X.T, X)), X.T), y)
 
         ###########################################################################
         return theta_n
@@ -132,11 +132,14 @@ class RegularizedLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate J (loss) wrt to X,y, and theta.                               #
         #  2 lines of code expected                                               #
         ###########################################################################
-        # J = 1.0 / (2.0 * num_examples) * sum(np.square((np.dot(X, np.array(theta).T)) - y))
-        # J += float(reg) / (2.0 * num_examples) * (sum(np.square(theta)))
-        J = 1.0 / (2.0 * num_examples) * np.square(np.array(theta)@X.T - y).sum()
-        J += float(reg) / (2.0 * num_examples) * (np.square(theta).sum())
-
+        # J = 1.0 / (2.0 * num_examples) * np.sum(np.square((np.dot(X, np.array(theta).T)) - y))
+        # J += float(reg) / (2.0 * num_examples) * (np.sum(np.square(theta)))
+        # J = 1.0 / (2.0 * num_examples) * np.square(np.array(theta)@X.T - y).sum()
+        # J += float(reg) / (2.0 * num_examples) * (np.square(theta).sum())
+        # diff = np.sum(np.tile(np.array(theta).T, (num_examples, 1)) * X, axis=1) - y
+        # J = (np.sum(np.square(diff)) + reg * (np.sum(np.square(theta[1:])))) / (2. * num_examples)
+        J = 1.0 / (2.0 * num_examples) * (np.square(y - X@np.array(theta).T)).sum()
+        J += reg / (2.0 * num_examples) * np.square(theta[1:]).sum()
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -156,6 +159,10 @@ class RegularizedLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # grad[1:] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[1:] + reg / num_examples * theta[1:]
         grad[0] = 1.0 / num_examples * ((X@np.array(theta).T - y).T@X)[0]
         grad[1:] = 1.0 / num_examples * ((X@np.array(theta).T - y).T@X)[1:] + reg / num_examples * theta[1:]
+        # diff = np.sum(np.tile(np.array(theta).T, (num_examples, 1)) * X, axis=1) - y
+        # grad = (np.matmul(diff, X) + reg * (np.hstack([0, theta[1:]]))) / num_examples
+        # grad[0] = 1.0 / num_examples * ((X@np.array(theta).T - y).T@X).sum()[0]
+        # grad[1:] = 1.0 / num_examples * ((X @ np.array(theta).T - y).T@ X).sum()[1:] + reg / num_examples * theta[1:]
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -184,9 +191,13 @@ class LassoLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate J (loss) wrt to X,y, and theta.                               #
         #  2 lines of code expected                                               #
         ###########################################################################
-        J = 1.0 / (2.0 * num_examples) * sum(np.square((np.dot(X, np.array(theta).T)) - y))
-        J += reg / num_examples * sum(np.abs(theta))
-
+        # J = 1.0 / (2.0 * num_examples) * sum(np.square((np.dot(X, np.array(theta).T)) - y))
+        # J += reg / num_examples * sum(np.abs(theta))
+        # diff = np.sum(np.tile(np.array(theta).T, (num_examples, 1)) * X, axis=1) - y
+        # # J = (np.sum(np.square(diff)) + reg * (np.sum(np.square(theta[1:])))) / (2. * num_examples)
+        # J = (np.sum(np.square(diff)) + reg * (np.sum(np.abs(theta)[1:]))) / (2. * num_examples)
+        J = 1.0 / (2.0 * num_examples) *(np.square(y - X@np.array(theta).T)).sum()
+        J += reg / num_examples * (np.abs(theta)[1:]).sum()
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -202,8 +213,14 @@ class LassoLinearReg_SquaredLoss(RegularizedLinearRegressor_Multi):
         # Calculate gradient of loss function wrt to X,y, and theta.              #
         #  3 lines of code expected                                               #
         ###########################################################################
-        grad[0] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[0]
-        grad[1:] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[1:] + reg / num_examples * np.sign(theta[1:])
+        # grad[0] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[0]
+        # grad[1:] = 1.0 / num_examples * np.dot((np.dot(X, np.array(theta).T) - y).T, X)[1:] + reg / num_examples * np.sign(theta[1:])
+        # diff = np.sum(np.tile(np.array(theta).T, (num_examples, 1)) * X, axis=1) - y
+        # grad = (np.matmul(diff, X) + reg * (np.hstack([0, np.sign(theta[1:])]))) / num_examples
+        # grad[0] = 1.0 / num_examples * (X @ np.array(theta).T - y).sum().T @ X[0]
+        # grad[1:] = 1.0 / num_examples * (X @ np.array(theta).T - y).sum().T @ X[1:] + reg / num_examples * np.sign(theta[1:])
+        grad[0] = 1.0 / num_examples * ((X @ np.array(theta).T - y).T @ X)[0]
+        grad[1:] = 1.0 / num_examples * ((X @ np.array(theta).T - y).T @ X)[1:] + reg / num_examples * np.sign(theta[1:])
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################

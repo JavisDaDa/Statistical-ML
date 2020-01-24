@@ -1,0 +1,47 @@
+maxTotalPoints: 40
+messages: []
+mode: all
+parts:
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.A1
+  points: 5
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.A2
+  points: 5
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.A3
+  points: 5
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.B1
+  points: 5
+  seconds: 0
+- maxPoints: 10
+  maxSeconds: 10
+  messages: []
+  name: 3.1.B2
+  points: 10
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.B3
+  points: 5
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.B4
+  points: 5
+  seconds: 0
+totalPoints: 40
