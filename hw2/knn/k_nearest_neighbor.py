@@ -71,7 +71,7 @@ class KNearestNeighbor(object):
         # training point, and store the result in dists[i, j]. You should   #
         # not use a loop over dimension. 1 line of code expected            #
         #####################################################################
-
+        dists[i, j] = np.linalg.norm(self.X_train[j, :] - X[i, :])
         pass
         #####################################################################
         #                       END OF YOUR CODE                            #
