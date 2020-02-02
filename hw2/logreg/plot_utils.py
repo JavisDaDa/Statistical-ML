@@ -112,11 +112,35 @@ from sklearn.svm import l1_min_c
 # From
 # http://scikit-learn.org/stable/auto_examples/linear_model/plot_logistic_path.html#example-linear-model-plot-logistic-path-py
 
-def plot_regularization_path(X,y):
+# def plot_regularization_path(X,y):
+#     plt.figure()
+#     cs = sklearn.svm.l1_min_c(X, y, loss='log') * np.logspace(0, 3)
+#     print("Computing regularization path ...")
+#     clf = linear_model.LogisticRegression(C=1.0, penalty='l1', tol=1e-6)
+#     coefs_ = []
+#     for c in cs:
+#         clf.set_params(C=c)
+#         clf.fit(X, y)
+#         coefs_.append(clf.coef_.ravel().copy())
+#
+#     coefs_ = np.array(coefs_)
+#     plt.plot(np.log10(cs), coefs_)
+#     ymin, ymax = plt.ylim()
+#     plt.xlabel('log(C)')
+#     plt.ylabel('Coefficients')
+#     plt.title('Logistic Regression Path')
+
+def plot_regularization_path(X,y,penalty):
     plt.figure()
     cs = sklearn.svm.l1_min_c(X, y, loss='log') * np.logspace(0, 3)
     print("Computing regularization path ...")
-    clf = linear_model.LogisticRegression(C=1.0, penalty='l1', tol=1e-6)
+    try:
+        if penalty == 'l1':
+            clf = linear_model.LogisticRegression(C=1.0, penalty='l1',solver='liblinear', tol=1e-6)
+        elif penalty == 'l2':
+            clf = linear_model.LogisticRegression(C=1.0, penalty='l2', solver='lbfgs', tol=1e-6)
+    except:
+        raise AttributeError
     coefs_ = []
     for c in cs:
         clf.set_params(C=c)

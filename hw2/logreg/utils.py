@@ -33,7 +33,7 @@ def sigmoid (z):
 def log_features(X):
     logf = np.zeros(X.shape)
     # Your code here
-    
+    logf = np.log(1 + X)
     
     # End your code
     return logf
@@ -60,11 +60,7 @@ def std_features(X):
 def bin_features(X):
     tX = np.zeros(X.shape)
     # your code here
-    
-
-             
-    
-
+    tX = (X > 0) * 1
     # end your code
     return tX
 
@@ -98,7 +94,27 @@ def select_lambda_crossval(X,y,lambda_low,lambda_high,lambda_step,penalty):
     best_lambda = lambda_low
     # Your code here
     # Implement the algorithm above.
-    
+    n = 10
+    lambda_record = {}
+    for l in np.linspace(lambda_low, lambda_high, int(np.abs(lambda_high - lambda_low) / lambda_step) + 1):
+        try:
+            if penalty == 'l2':
+                clf = linear_model.LogisticRegression(C=1.0/l, penalty='l2', solver='lbfgs', fit_intercept=True)
+            elif penalty == 'l1':
+                clf = linear_model.LogisticRegression(C=1.0 / l, penalty='l1', solver='liblinear', fit_intercept=True)
+        except:
+            raise AttributeError
+        kfold = model_selection.KFold(n)
+        accuracies = list()
+        for train_index, val_index in kfold.split(X):
+            Xtrain, Xval = X[train_index], X[val_index]
+            ytrain, yval = y[train_index], y[val_index]
+            clf.fit(Xtrain, ytrain)
+            predy = clf.predict(Xval)
+            accuracy = np.mean(predy == yval)
+            accuracies.append(accuracy)
+        lambda_record[l] = np.mean(accuracies)
+    best_lambda = sorted(lambda_record, key=lambda x : lambda_record[x])[-1]
 
     # end your code
 
