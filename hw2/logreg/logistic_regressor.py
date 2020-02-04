@@ -1,5 +1,5 @@
 import numpy as np
-import utils 
+import utils
 import math
 import scipy 
 from scipy import optimize
@@ -132,7 +132,7 @@ class LogisticRegressor:
 
 class RegLogisticRegressor:
 
-    def __init__(self):
+    def __init__(self) -> object:
         self.theta = None
 
     def train(self,X,y,reg=1e-5,num_iters=1000,norm=True):
@@ -231,13 +231,14 @@ class RegLogisticRegressor:
         m,dim = X.shape
         grad = np.zeros((dim,))
         ##########################################################################
-        # Compute the gradient of the loss function for regularized logistic     #
+        # Compute the gradient of the loss function for regularized logistic
         # regression                                                             #
         # TODO: 2 lines of code expected                                          #
         ##########################################################################
         h = utils.sigmoid(X@theta)
         theta[0] = 0
         grad = 1 / m * (X.T@(h - y.T)) + reg / m * theta
+
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -271,3 +272,20 @@ class RegLogisticRegressor:
         return y_pred
 
 
+if __name__ == '__main__':
+    A = np.array([[0,3],[1,3],[0,1],[1,1]])
+    #prepend 1
+    A = np.c_[np.ones(A.shape[0]), A]
+    y = np.array([1,1,0,0])
+    theta = np.array([[0,-2,1]])
+    thetaTran = theta.T
+    reg = 0.07
+    #grad + hess
+    h = utils.sigmoid(A @ thetaTran)
+    grad = 1 / 4 * np.dot(A.T, (h - y.T)) + reg / 4 * thetaTran
+    I = np.identity(grad.shape[0])
+    HESS = 1 / 4 * (np.dot(A.T, A) * np.diag(h) * np.diag(1 - h)) + reg / 4 * I
+    #Newton's law
+    hessianInv = np.linalg.inv(HESS)
+    theta1 = thetaTran - np.dot(hessianInv, grad)
+    print(theta1)

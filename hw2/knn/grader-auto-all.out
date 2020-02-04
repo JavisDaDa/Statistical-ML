@@ -24,7 +24,7 @@
             'messages': [],
             'name': '3.3',
             'points': 5,
-            'seconds': 2},
+            'seconds': 1},
            {'maxPoints': 5,
             'maxSeconds': 10,
             'messages': [],
