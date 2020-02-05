@@ -31,7 +31,7 @@ def sigmoid (z):
 ######################################################################################
 
 def log_features(X):
-    logf = np.zeros(X.shape)
+    #logf = np.zeros(X.shape)
     # Your code here
     logf = np.log(1 + X)
     
