@@ -288,4 +288,6 @@ if __name__ == '__main__':
     #Newton's law
     hessianInv = np.linalg.inv(HESS)
     theta1 = thetaTran - np.dot(hessianInv, grad)
-    print(theta1)
+    theta2 = theta1 - np.dot(hessianInv, grad)
+    print(f'After the first iteration is\n{theta1}')
+    print(f'After the first iteration is\n{theta2}')
