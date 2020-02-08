@@ -273,21 +273,22 @@ class RegLogisticRegressor:
 
 
 if __name__ == '__main__':
-    A = np.array([[0,3],[1,3],[0,1],[1,1]])
+    A = np.array([0, 3, 1, 3, 0, 1, 1, 1]).reshape((4, 2))
     #prepend 1
     A = np.c_[np.ones(A.shape[0]), A]
-    y = np.array([1,1,0,0])
-    theta = np.array([[0,-2,1]])
-    thetaTran = theta.T
+    y = np.array([1, 1, 0, 0]).reshape(1, 4)
+    theta = np.array([0, -2, 1]).reshape(3, 1)
     reg = 0.07
     #grad + hess
-    h = utils.sigmoid(A @ thetaTran)
-    grad = 1 / 4 * np.dot(A.T, (h - y.T)) + reg / 4 * thetaTran
+    h = utils.sigmoid(A @ theta)
+    m, _ = A.shape
+    test = h - y.T
+    grad = 1 / m * A.T@(h - y.T) + reg / m * theta
     I = np.identity(grad.shape[0])
-    HESS = 1 / 4 * (np.dot(A.T, A) * np.diag(h) * np.diag(1 - h)) + reg / 4 * I
+    HESS = 1 / m * (np.dot(A.T, A) * np.diag(h) * np.diag(1 - h)) + reg / m * I
     #Newton's law
     hessianInv = np.linalg.inv(HESS)
-    theta1 = thetaTran - np.dot(hessianInv, grad)
+    theta1 = theta - np.dot(hessianInv, grad)
     theta2 = theta1 - np.dot(hessianInv, grad)
-    print(f'After the first iteration is\n{theta1}')
-    print(f'After the first iteration is\n{theta2}')
+    print(f'After the first iteration is\n {theta1}')
+    print(f'After the first iteration is\n {theta2}')
