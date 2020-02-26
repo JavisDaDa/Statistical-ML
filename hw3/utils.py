@@ -147,3 +147,6 @@ def preprocess(X_train, X_val, X_test):
 
 def sigmoid(X):
     return 1. / (1. + np.exp(-X))
+
+if __name__ == '__main__':
+    X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
