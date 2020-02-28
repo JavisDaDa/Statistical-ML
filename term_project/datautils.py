@@ -5,7 +5,6 @@ import pandas as pd
 import os
 from keras.preprocessing.image import load_img, img_to_array
 
-
 def createTrainValiddf(train_dir, val_dir):
     train_df = pd.read_csv(train_dir)
     val_df = pd.read_csv(val_dir)
@@ -55,8 +54,8 @@ def load_data(df, dir, size=(256, 256, 3)):
     X = []
     y = []
     n = len(df)
+    train = []
     for i in range(n):
-        train = []
         img_name = df.iloc[i]['img_name'].values
         label_name = df.iloc[i]['label'].values
         y.append(label_name)
