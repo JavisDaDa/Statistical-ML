@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 from keras.preprocessing.image import load_img, img_to_array
+from keras_preprocessing.image import ImageDataGenerator
 
 def createTrainValiddf(train_dir, val_dir):
     train_df = pd.read_csv(train_dir)
@@ -111,3 +112,127 @@ def load_batch(train_dir, val_dir, train_df, val_df, test_dir, test_df, size=(25
 
 
     return X_train, y_train, X_val, y_val
+
+def gettrain(train_df, train_dir, sample=50000, image_size=32, batch_size=1):
+    train_datagen = ImageDataGenerator(
+        rescale=1. / 255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+    train_df = train_df.sample(sample)
+    train_generator = train_datagen.flow_from_dataframe(
+        train_df,
+        x_col='img_name',
+        y_col='class',
+        class_mode='categorical',
+        directory=train_dir,  # this is the target directory
+        shuffle=False,
+        target_size=(image_size, image_size),  # all images will be resized to 150x150
+        batch_size=batch_size)  # since we use binary_crossentropy loss, we need binary labels
+    y_train = np.array(train_generator.classes)
+    train_generator.reset()
+    X_train = []
+    for i in range(sample):
+        img, _ = next(train_generator)
+        img = img[0].reshape((-1,))
+        X_train.append(img)
+    X_train = np.array(X_train)
+    return X_train, y_train
+
+def gettestdata(df,dir, sample=50000, image_size=32, batch_size=1, class_mode='class'):
+    test_datagen = ImageDataGenerator(rescale=1. / 255)
+    train_df = df.sample(sample)
+    train_generator = test_datagen.flow_from_dataframe(
+        train_df,
+        x_col='img_name',
+        y_col=class_mode,
+        class_mode='categorical',
+        directory=dir,  # this is the target directory
+        shuffle=False,
+        target_size=(image_size, image_size),  # all images will be resized to 150x150
+        batch_size=batch_size)  # since we use binary_crossentropy loss, we need binary labels
+    y = np.array(train_generator.classes)
+    train_generator.reset()
+    X = []
+    for i in range(sample):
+        img, _ = next(train_generator)
+        img = img[0].reshape((-1,))
+        X.append(img)
+    X = np.array(X)
+    labels = (train_generator.class_indices)
+    label = dict((v, k) for k, v in labels.items())
+    return X, y, label
+
+
+def getDeepTrain(train_df, train_dir, sample=50000, image_size=32, batch_size=1):
+    train_datagen = ImageDataGenerator(
+        rescale=1. / 255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+    train_df = train_df.sample(sample)
+    train_generator = train_datagen.flow_from_dataframe(
+        train_df,
+        x_col='img_name',
+        y_col='class',
+        class_mode='categorical',
+        directory=train_dir,  # this is the target directory
+        shuffle=False,
+        target_size=(image_size, image_size),  # all images will be resized to 150x150
+        batch_size=batch_size)  # since we use binary_crossentropy loss, we need binary labels
+    return train_generator
+
+def getDeepTest(df,dir, sample=50000, image_size=32, batch_size=1, class_mode='class'):
+    test_datagen = ImageDataGenerator(rescale=1. / 255)
+    train_df = df.sample(sample)
+    train_generator = test_datagen.flow_from_dataframe(
+        train_df,
+        x_col='img_name',
+        y_col=class_mode,
+        class_mode='categorical',
+        directory=dir,  # this is the target directory
+        shuffle=False,
+        target_size=(image_size, image_size),  # all images will be resized to 150x150
+        batch_size=batch_size)
+    return train_generator
+
+
+def preds2trueclass(preds, datagen, train_datagen=None, label=None, test=False):
+    p = np.argmax(preds, axis=1)
+    if not test:
+        labels = datagen.class_indices
+        label = dict((v, k) for k, v in labels.items())
+    else:
+        labels = train_datagen.class_indices
+
+        label = dict((v, k) for k, v in labels.items())
+    trueclass = []
+    for i in list(p):
+        trueclass.append(label[i])
+    return trueclass
+
+def createclass2label(path):
+    table = pd.read_table(path, header=None, sep=' ')
+    table.columns = ['label', 'class']
+    class_dic = {}
+    n = len(table)
+    for i in range(n):
+        class_dic[table.iloc[i]['class']] = table.iloc[i]['label']
+    return class_dic
+
+def trueclass2label(trueclass, class_dir):
+    truelabel = []
+    for i in trueclass:
+        truelabel.append(class_dir[i])
+    return truelabel
+
+def save2csv(datagen, truelabel, test_df=None, save=False, name='submission'):
+    files = datagen.filenames
+    pred_dfdata = {files[i]: truelabel[i] for i in range(len(truelabel))}
+    df = pd.DataFrame([pred_dfdata]).T
+    df = df.reset_index()
+    df.columns = ['img_name', 'pred_label']
+    combinedf = pd.merge(test_df, df)
+    if save:
+        combinedf.to_csv(f'{name}.csv')
+    return df, combinedf

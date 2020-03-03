@@ -1,0 +1,35 @@
+maxTotalPoints: 28
+messages: []
+mode: all
+parts:
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 3.1.A
+  points: 5
+  seconds: 0
+- maxPoints: 3
+  maxSeconds: 10
+  messages: []
+  name: 3.1.C
+  points: 3
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 4.A
+  points: 5
+  seconds: 0
+- maxPoints: 10
+  maxSeconds: 10
+  messages: []
+  name: 4.B
+  points: 10
+  seconds: 0
+- maxPoints: 5
+  maxSeconds: 10
+  messages: []
+  name: 4.C
+  points: 5
+  seconds: 0
+totalPoints: 28
