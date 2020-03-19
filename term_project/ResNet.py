@@ -12,10 +12,11 @@ from keras.models import Model
 from keras import regularizers
 from keras.utils import plot_model
 from keras import backend as K
+from keras.utils import multi_gpu_model
+import tensorflow as tf
 plt.rcParams['figure.figsize'] = (10.0, 8.0) # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
-
 
 class ResNet(object):
     def __init__(self, train_df, val_df, train_dir, val_dir, class_dic, test_df, test_dir, train_sample=50000,
@@ -47,6 +48,7 @@ class ResNet(object):
                                               image_size=self.image_size, batch_size=self.batch_size)
         STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
         STEP_SIZE_VALID = val_generator.n // val_generator.batch_size
+
         self.model.compile(optimizer, loss=loss, metrics=[metrics])
         checkpointer_path = f'ResNet_{self.image_size}_{self.train_sample}_checkpoint.hdf5'
         csv_logger_path = f'history_{self.num_classes}.log'
@@ -78,8 +80,9 @@ class ResNet(object):
         pool2 = GlobalAvgPool2D()(conv5)
         output_ = Dense(self.num_classes, activation='softmax')(pool2)
 
-        model = Model(inputs=input_, outputs=output_)
-        model.summary()
+        with tf.device('/cpu:0'):
+            model = Model(inputs=input_, outputs=output_)
+            model.summary()
         self.model = model
 
     def conv2d_bn(self, x, nb_filter, kernel_size, strides=(1, 1), padding='same'):
