@@ -27,8 +27,7 @@ train_df = pd.read_csv(train_label_dir)
 valid_df = pd.read_csv(valid_label_dir)
 
 train_data_df = train_df.sample(TRAIN_SAMPLE)
-# valid_data_df = valid_df.sample(VALID_SAMPLE)
-valid_data_df = valid_df
+valid_data_df = valid_df.sample(VALID_SAMPLE)
 test_data_df = pd.read_csv(test_label_dir)
 
 print(f'Found {train_data_df.shape[0]} train images in {len(train_data_df.label.unique())} classes')
@@ -75,46 +74,27 @@ valid_loader = DataLoader(dataset=valid_data, batch_size=BATCH_SIZE)
 test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
 
 # choose model
-vgg_model = models.vgg16(pretrained=True)
-for parameter in vgg_model.parameters():
-    parameter.requires_grad = False
+resnet152_model = models.resnet152(pretrained=True)
 
-classifier = nn.Sequential(OrderedDict({
-    'fc1': nn.Linear(25088, 5000),
-    'relu': nn.ReLU(),
-    'drop': nn.Dropout(p=0.5),
-    'fc2': nn.Linear(5000, N_CLASSES),
-    'output': nn.LogSoftmax(dim=1)
-}))
+# change fc layer
+# num_features = resnet152_model.fc.in_features
 
-vgg_model.classifier = classifier
+# resnet152_model.fc = nn.Linear(num_features, N_CLASSES)
 
 # Loss Function
-# criterion = nn.NLLLoss()
-criterion = nn.MultiMarginLoss()
+criterion = nn.CrossEntropyLoss()
+
+
 # optimizer
-optimizer = optim.Adam(vgg_model.parameters(), lr=LR)
+fc_params_id = list(map(id, resnet152_model.fc.parameters()))
+base_params = filter(lambda p: id(p) not in fc_params_id, resnet152_model.parameters())
+optimizer = optim.SGD([
+    {'params': base_params, 'lr': LR * 0.1},    # 0
+    {'params': resnet152_model.fc.parameters(), 'lr': LR}], momentum=0.9)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1)
+
+
 # train
-
-def tes_model(model, loader):
-    pred_label = list()
-    for j, data in enumerate(loader):
-        images, labels = data
-        images = images.to('cuda')
-
-        # outputs = model(images)
-        # loss = criterion(outputs, labels)
-        labels = list(labels.numpy())
-        pred_label.append(labels)
-        print(pred_label)
-        print(len(pred_label))
-    print(pred_label)
-        # _, predicted = torch.max(outputs.data, 1)
-
-
-tes_model(vgg_model, test_loader)
-
 def train_classifier(model, print_every):
     train_curve = list()
     valid_curve = list()
@@ -194,7 +174,9 @@ def train_classifier(model, print_every):
                     e, MAX_EPOCH, j + 1, len(valid_loader), loss_val_mean, correct_val / total_val))
             model.train()
 
-train_classifier(vgg_model, print_every=50)
+# train_classifier(resnet152_model, print_every=50)
+
+
 def save_model(model, name, save_state_dic=False):
     model_path = f'./{name}.pkl'
     if save_state_dic:
@@ -223,7 +205,7 @@ def train_classifier_resume(model, optimizer, path_checkpoint):
 
     print_every = 40
 
-    vgg_model.to('cuda')
+    model.to('cuda')
     for e in range(start_epoch + 1, MAX_EPOCH):
 
         loss_mean = 0.
@@ -268,22 +250,18 @@ def train_classifier_resume(model, optimizer, path_checkpoint):
                 "optimizer_state_dict": optimizer.state_dict(),
                 "epoch": e
             }
-            path_checkpoint = f'./checkpoint_{e}_epoch.pkl'
+            path_checkpoint = f'.checkpoint_{e}_epoch.pkl'
             torch.save(checkpoint, path_checkpoint)
 
-        # validation
         if (e + 1) % val_interval == 0:
-
             correct_val = 0.
             total_val = 0.
             loss_val = 0.
             model.eval()
             with torch.no_grad():
                 for j, data in enumerate(valid_loader):
-                    images, labels = data
-                    images, labels = images.to('cuda'), labels.to('cuda')
-
-                    outputs = model(images)
+                    inputs, labels = data
+                    outputs = model(inputs)
                     loss = criterion(outputs, labels)
 
                     _, predicted = torch.max(outputs.data, 1)
@@ -292,9 +270,11 @@ def train_classifier_resume(model, optimizer, path_checkpoint):
 
                     loss_val += loss.item()
 
-                loss_val_mean = loss_val / len(valid_loader)
                 valid_curve.append(loss.item())
                 print("Valid:\t Epoch[{:0>3}/{:0>3}] Iteration[{:0>3}/{:0>3}] Loss: {:.4f} Acc:{:.2%}".format(
-                    e, MAX_EPOCH, j + 1, len(valid_loader), loss_val_mean, correct_val / total_val))
-            model.train()
+                    e, MAX_EPOCH, j + 1, len(valid_loader), loss_val / len(valid_loader), correct_val / total_val))
+
+
+# save_model(resnet152_model, name='resnet152', save_state_dic=True)
+
 
