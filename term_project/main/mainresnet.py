@@ -77,9 +77,9 @@ test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
 resnet152_model = models.resnet152(pretrained=True)
 
 # change fc layer
-# num_features = resnet152_model.fc.in_features
+num_features = resnet152_model.fc.in_features
 
-# resnet152_model.fc = nn.Linear(num_features, N_CLASSES)
+resnet152_model.fc = nn.Linear(num_features, N_CLASSES)
 
 # Loss Function
 criterion = nn.CrossEntropyLoss()
@@ -91,8 +91,15 @@ base_params = filter(lambda p: id(p) not in fc_params_id, resnet152_model.parame
 optimizer = optim.SGD([
     {'params': base_params, 'lr': LR * 0.1},    # 0
     {'params': resnet152_model.fc.parameters(), 'lr': LR}], momentum=0.9)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1)
-
+# scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1)
+factor = 0.1
+mode = "min"
+patience = 10
+cooldown = 10
+min_lr = 1e-4
+verbose = True
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,  factor=factor, mode=mode, patience=patience,
+                                                        cooldown=cooldown, min_lr=min_lr, verbose=verbose)
 
 # train
 def train_classifier(model, print_every):
@@ -277,4 +284,35 @@ def train_classifier_resume(model, optimizer, path_checkpoint):
 
 # save_model(resnet152_model, name='resnet152', save_state_dic=True)
 
+# inference
+model_path = "../model/resnet152/resnet152_state_dict.pkl"
+pred_list = []
+state_dict = torch.load(model_path)
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
+inference_model = models.resnet152()
+num_features = inference_model.fc.in_features
+inference_model.fc = nn.Linear(num_features, N_CLASSES)
+inference_model.load_state_dict(state_dict)
+inference_model.to(device)
+inference_model.eval()
+with torch.no_grad():
+    for i, data in enumerate(test_loader):
+        images, _ = data
+        images = images.to(device)
 
+        # tensor to vector
+        outputs = inference_model(images)
+
+        # convert to df
+        _, pred_int = torch.max(outputs.data, 1)
+        pred_list.append(pred_int.cpu().numpy().reshape((1, -1)).tolist())
+        print(f'Finished {i+1} prediction')
+
+
+new_pred_list = []
+for i in range(len(pred_list)):
+    for j in range(len(pred_list[i][0])):
+        new_pred_list.append(pred_list[i][0][j])
+test_data_df['pred_label'] = new_pred_list
+test_data_df.to_csv('./drive/My Drive/COMP540/resnet152.csv')

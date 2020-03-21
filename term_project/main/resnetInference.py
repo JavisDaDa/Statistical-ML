@@ -50,39 +50,35 @@ img_list, img_pred = list(), list()
 test_data = FoodDataset(data_dir=test_dir, data_df=test_data_df, transform=test_transform)
 test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
 # model
-resnet152 = models.resnet152()
-num_features = resnet152.fc.in_features
-resnet152.fc = nn.Linear(num_features, N_CLASSES)
-state_dict = torch.load(model_path)
-resnet152.load_state_dict(state_dict)
-resnet152.to(device)
-resnet152.eval()
+# inference
 
 pred_list = []
+state_dict = torch.load(model_path)
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
+inference_model = models.resnet152()
+num_features = inference_model.fc.in_features
+inference_model.fc = nn.Linear(num_features, N_CLASSES)
+inference_model.load_state_dict(state_dict)
+inference_model.to(device)
+inference_model.eval()
 with torch.no_grad():
     for i, data in enumerate(test_loader):
         images, _ = data
         images = images.to(device)
 
-        # path to img
-        # img_rgb = Image.open(path_img).convert('RGB')
-
-        # img to tensor
-        # img_tensor = img_transfoem(img_rgb, test_transform)
-        # img_tensor.unsqueeze_(0)
-        # img_tensor = img_tensor.to(device)
-
         # tensor to vector
-        time_tic = time.time()
-        outputs = resnet152(images)
-        time_toc = time.time()
+        outputs = inference_model(images)
 
         # convert to df
         _, pred_int = torch.max(outputs.data, 1)
-        pred_list.append([i for i in pred_int.cpu().numpy().reshape((1, -1)).tolist()])
+        pred_list.append(pred_int.cpu().numpy().reshape((1, -1)).tolist())
         print(f'Finished {i+1} prediction')
-        if i > 3:
-            break
-print(pred_list)
-# test_data_df['pred_label'] = pred_list
-# test_data_df.to_csv('resnet152.csv')
+
+
+new_pred_list = []
+for i in range(len(pred_list)):
+    for j in range(len(pred_list[i][0])):
+        new_pred_list.append(pred_list[i][0][j])
+test_data_df['pred_label'] = new_pred_list
+test_data_df.to_csv('./drive/My Drive/COMP540/resnet152.csv')
