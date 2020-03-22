@@ -57,9 +57,9 @@ def affine_backward(dout, cache):
   #############################################################################
   # Hint: do not forget to reshape x into (m,d) form
   # 4-5 lines of code expected
-
-
-  pass
+  dx = (dout @ theta.T).reshape(x.shape)
+  dtheta = x.reshape((theta.shape[0], x.shape[0])) @ dout
+  dtheta0 = np.sum(dout, axis=0)
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################

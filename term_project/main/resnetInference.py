@@ -14,8 +14,8 @@ BATCH_SIZE = 32
 norm_mean = [0.485, 0.456, 0.406]
 norm_std = [0.229, 0.224, 0.225]
 
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 test_label_dir = os.path.join("..", "data", "sample_submission.csv")
 test_data_df = pd.read_csv(test_label_dir)
 
@@ -55,7 +55,7 @@ test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
 pred_list = []
 state_dict = torch.load(model_path)
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+# device = torch.device("cpu")
 inference_model = models.resnet152()
 num_features = inference_model.fc.in_features
 inference_model.fc = nn.Linear(num_features, N_CLASSES)
