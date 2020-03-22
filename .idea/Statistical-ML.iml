@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/term_project" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/term_project/tools" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (MacbookPro) (6)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (Statistical-ML)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

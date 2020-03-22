@@ -25,8 +25,8 @@ def affine_forward(x, theta, theta0):
   # will need to reshape the input into rows.                                 #
   #############################################################################
   # 2 lines of code expected
-  x = x.reshape((x.shape[0], theta.shape[0]))
-  out = x @ theta + theta0
+  xmd = x.reshape((x.shape[0], theta.shape[0]))
+  out = xmd @ theta + theta0
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
@@ -57,8 +57,9 @@ def affine_backward(dout, cache):
   #############################################################################
   # Hint: do not forget to reshape x into (m,d) form
   # 4-5 lines of code expected
+  xmd = x.reshape((x.shape[0], theta.shape[0]))
   dx = (dout @ theta.T).reshape(x.shape)
-  dtheta = x.reshape((theta.shape[0], x.shape[0])) @ dout
+  dtheta = xmd.T @ dout
   dtheta0 = np.sum(dout, axis=0)
   #############################################################################
   #                             END OF YOUR CODE                              #
